@@ -26,7 +26,10 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ['*', '.js', '.jsx'] },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: { src: path.resolve(__dirname, './src') }
+  },
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist')
