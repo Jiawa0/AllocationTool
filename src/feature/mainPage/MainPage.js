@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import * as $ from './$MainPage';
-import CustomInputNumber from 'src/components/customInputNumber';
 import RoomAllocation from 'src/components/roomAllocation';
 
 const MainPage = () => {
