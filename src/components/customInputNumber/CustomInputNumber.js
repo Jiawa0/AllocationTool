@@ -13,25 +13,51 @@ const CustomInputNumber = ({
   onChange = (event) => {},
   onBlur = (event) => {}
 }) => {
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(0);
   const [inputRef, triggerInputEvent] = useEvent('chagneValue', (e) => {
     if (onChange) onChange(e);
   });
   const isMounted = useRef(false);
   const intervalRef = useRef(null);
+  const minMaxRef = useRef({ min: 0, max: 0 });
+
+  useEffect(() => {
+    setInputValue(value);
+    return () => (isMounted.current = false);
+  }, [value]);
 
   useEffect(() => {
     if (isMounted.current) {
-      // 忽略第一次的 setInputValue
-      triggerInputEvent();
+      const { min, max } = minMaxRef.current;
+      // 驗證完為最後值才觸發 changeValue
+      if (min <= inputValue && (!max || (max > min && max >= inputValue))) {
+        console.log('inputValue ===========', inputValue);
+        triggerInputEvent();
+      }
       return;
     }
     isMounted.current = true;
   }, [inputValue]);
 
+  /** 處理 min max 變化 */
   useEffect(() => {
-    setInputValue((prev) => (+prev < min ? min : prev));
+    minMaxRef.current = { min, max };
+    setInputValue((prev) => {
+      if (prev < min) return min;
+      if (max && prev > max) return max;
+      return prev;
+    });
   }, [min, max]);
+
+  /** 處理長案達到 min max 刪除 interval */
+  useEffect(() => {
+    if (inputValue <= min || (max && inputValue >= max)) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+  }, [min, max, inputValue]);
 
   /** 處理 input 更動 */
   const handleInputChange = (e) => {
@@ -44,9 +70,11 @@ const CustomInputNumber = ({
     let finalValue = e.target.value;
     // 處理 min、max
     if (min > +finalValue) {
+      console.log('min', min, 'finalValue', finalValue);
       finalValue = min;
-    } else if (max < +finalValue) {
+    } else if (max && max < +finalValue) {
       finalValue = max;
+      console.log('max', max, 'finalValue', finalValue);
     }
     setInputValue(+finalValue);
 

@@ -7,7 +7,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	border: none;
 	font: inherit;
   vertical-align: baseline;
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family:  sans-serif;
   box-sizing: border-box;
 }
 
@@ -156,6 +156,7 @@ input::-webkit-inner-spin-button {
 
  button, html input[type="button"] {
 	-webkit-appearance: button;
+  appearance:button;
 	padding: 2px 6px;
 	cursor: pointer;
   outline: none;
@@ -164,6 +165,7 @@ input::-webkit-inner-spin-button {
  input {
 	&[type="reset"], &[type="submit"] {
 		-webkit-appearance: button;
+    appearance:button;
     cursor: pointer;
   }
 } 
@@ -180,6 +182,7 @@ button[disabled], html input[disabled] {
 
 	&[type="search"] {
 		-webkit-appearance: textfield;
+    appearance:textfield;
 		-moz-box-sizing: content-box;
 		-webkit-box-sizing: content-box;
 		box-sizing: content-box;

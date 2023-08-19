@@ -2,7 +2,7 @@ export const theme = Object.freeze({
   color: {
     disabled: '#dedede',
     main: '#64b3de',
-    gray: '#bababa'
+    gray: '#adadad'
   },
 
   convertHexToRGBA: (hexCode, opacity = 1) => {
