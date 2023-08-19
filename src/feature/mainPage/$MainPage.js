@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 export const PageWrapper = styled.div`
-  margin: 10%;
+  margin: 48px auto;
   padding: 1rem;
   border: 1px dashed gray;
+  max-width: 600px;
 `;
 
 export const CounterBlock = styled.div`

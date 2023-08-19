@@ -3,6 +3,8 @@ import * as $ from './$CustomInputNumber';
 import { MinusIcon, PlusIcon } from '../icons';
 import { useEvent } from 'src/hooks/useEvent';
 
+const defaultValue = 0;
+
 const CustomInputNumber = ({
   min = 1,
   max = 0,
@@ -13,31 +15,37 @@ const CustomInputNumber = ({
   onChange = (event) => {},
   onBlur = (event) => {}
 }) => {
-  const [inputValue, setInputValue] = useState(0);
+  const [inputValue, setInputValue] = useState(defaultValue);
   const [inputRef, triggerInputEvent] = useEvent('chagneValue', (e) => {
     if (onChange) onChange(e);
   });
   const isMounted = useRef(false);
   const intervalRef = useRef(null);
   const minMaxRef = useRef({ min: 0, max: 0 });
+  const isDefaultValueSet = useRef(false);
 
+  /** 處理 changeValue 事件觸發 */
   useEffect(() => {
-    setInputValue(value);
-    return () => (isMounted.current = false);
-  }, [value]);
-
-  useEffect(() => {
-    if (isMounted.current) {
+    if (isMounted.current && isDefaultValueSet.current) {
       const { min, max } = minMaxRef.current;
       // 驗證完為最後值才觸發 changeValue
       if (min <= inputValue && (!max || (max > min && max >= inputValue))) {
-        console.log('inputValue ===========', inputValue);
         triggerInputEvent();
       }
       return;
     }
     isMounted.current = true;
   }, [inputValue]);
+
+  /** 處理預設值 */
+  useEffect(() => {
+    if (isDefaultValueSet.current) return;
+    if (value === inputValue) {
+      isDefaultValueSet.current = true;
+      return;
+    }
+    if (value && value !== defaultValue) setInputValue(value);
+  }, [value, inputValue]);
 
   /** 處理 min max 變化 */
   useEffect(() => {
@@ -70,11 +78,9 @@ const CustomInputNumber = ({
     let finalValue = e.target.value;
     // 處理 min、max
     if (min > +finalValue) {
-      console.log('min', min, 'finalValue', finalValue);
       finalValue = min;
     } else if (max && max < +finalValue) {
       finalValue = max;
-      console.log('max', max, 'finalValue', finalValue);
     }
     setInputValue(+finalValue);
 
